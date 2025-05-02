@@ -54,3 +54,5 @@ Potential Additions:
   	     				so that an adversary cannot manipulate bot orders to exchange
 
 - Maybe exchange is server hosted	So that bots can be developed async and deployed real time.
+
+
