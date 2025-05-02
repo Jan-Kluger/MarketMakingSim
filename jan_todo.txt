@@ -55,4 +55,24 @@ Potential Additions:
 
 - Maybe exchange is server hosted	So that bots can be developed async and deployed real time.
 
+Objects and Method signatures:
 
+Objects			Methods			Calls Foregin Module
+
+Order Manager		+ Submit_Order		Order_book, Log DB
+      			+ Cancel_Order		Order_book, Log DB
+			+ Get_Wallet		Wallet DB
+			+ Get_Orderbook		-
+			+ Register_User		Wallet DB
+			+ Deposit_Balance	Wallet DB
+			+ List_Open_Orders	-
+			
+Gateway API		+ Submit Order		Order_Manager
+			+ Cancel_Order		Order_Manager
+			+ get_Chart_data	Order_Book
+
+Order Book		+ Insert		-
+			+ Remove		-
+			+ Best_Match		-
+			+ Get_all_Open_Orders	-
+			- Update_After_Trade	-
