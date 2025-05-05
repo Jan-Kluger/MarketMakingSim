@@ -1,4 +1,3 @@
 (library
  (name order_manager_lib)
- (modules types)
  )

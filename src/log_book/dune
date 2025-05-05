@@ -1,4 +1,3 @@
 (library
  (name log_book_lib)
- (modules types)
  )

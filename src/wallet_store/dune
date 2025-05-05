@@ -1,4 +1,3 @@
 (library
  (name wallet_store_lib)
- (modules types)
  )
