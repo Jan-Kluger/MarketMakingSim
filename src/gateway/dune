@@ -1,4 +1,12 @@
 (library
  (name gateway_lib)
- (modules types)
+ (modules gateway exchange)
+ (libraries 
+  base 
+  lwt 
+  logs 
+  grpc 
+  grpc-lwt 
+  types_lib
+  ocaml-protoc-plugin)
  )
