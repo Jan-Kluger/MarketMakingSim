@@ -1,3 +1,4 @@
 (library
  (name log_book_lib)
+ (modules log_book)
  )
