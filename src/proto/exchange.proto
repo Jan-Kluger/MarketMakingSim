@@ -3,8 +3,6 @@ package mypackage;
 
 service Exchange {
   rpc SubmitOrder(Order) returns (SubmitAck) {}
-
-  // TODO
   rpc GetWallet (WalletRequest) returns (WalletAck) {}
   rpc GetMarketData (MarketDataRequest) returns (MarketDataResponse) {}
   rpc CancelOrder (CancelOrderRequest) returns (CancelAck) {}
@@ -13,7 +11,7 @@ service Exchange {
 
 message Order {
   string  id        = 1;
-  uint64  user_id   = 2;
+  string  user_id   = 2;
   string  side      = 3;
   double  price     = 4;
   uint32  quantity  = 5;
@@ -33,6 +31,8 @@ message WalletRequest {
 message WalletAck {
   string user_id = 1;
   double balance = 2;
+  uint32 error_code = 3;
+
 }
 
 message MarketDataRequest {
@@ -43,6 +43,7 @@ message MarketDataRequest {
 
 message MarketDataResponse {
   double value = 1;
+  uint32 error_code = 2;
 }
 
 message CancelOrderRequest {
@@ -63,4 +64,5 @@ message OrderAliveRequest {
 
 message OrderAliveResponse {
   bool alive = 1;
+  uint32 error_code = 2;
 }
