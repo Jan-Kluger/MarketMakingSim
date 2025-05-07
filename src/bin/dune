@@ -1,4 +1,5 @@
 (executable
  (public_name src)
  (name main)
- (libraries types_lib))
+ (libraries types_lib order_manager_lib gateway_lib)
+ (modules main))
