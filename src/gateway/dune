@@ -1,12 +1,15 @@
 (library
+ (modules server)
  (name gateway_lib)
- (modules gateway exchange)
- (libraries 
-  base 
-  lwt 
-  logs 
-  grpc 
-  grpc-lwt 
-  types_lib
-  ocaml-protoc-plugin)
+ (libraries
+  grpc
+  grpc-lwt
+  ocaml-protoc-plugin
+  lwt
+  lwt.unix
+  exchange
+  h2
+  h2-lwt-unix
+  order_manager_lib
+  )
  )
