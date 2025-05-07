@@ -1,9 +1,7 @@
-(* This file includes the basic types needed for all modules in the simulation *)
+type side = Buy | Sell [@@deriving show]
 
-type side = Buy | Sell
-
-type order_id = int
-type user_id  = int
+type order_id = int [@@deriving show]
+type user_id  = int [@@deriving show]
 
 type order = {
   id        : order_id;
@@ -12,7 +10,7 @@ type order = {
   price     : float option;
   quantity  : int;
   timestamp : float;
-}
+} [@@deriving show]
 
 type trade = {
   buy_id    : order_id;
@@ -20,7 +18,7 @@ type trade = {
   price     : float;
   quantity  : int;
   timestamp : float;
-}
+} [@@deriving show]
 
 let side_to_char = function
   | Buy  -> 'B'

@@ -1,4 +1,5 @@
 (library
  (name types_lib)
+  (preprocess (pps ppx_deriving.std ppx_deriving.show))
  (modules types)
  )
