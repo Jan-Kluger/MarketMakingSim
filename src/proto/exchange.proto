@@ -1,0 +1,66 @@
+syntax = "proto3";
+package mypackage;
+
+service Exchange {
+  rpc SubmitOrder(Order) returns (SubmitAck) {}
+
+  // TODO
+  rpc GetWallet (WalletRequest) returns (WalletAck) {}
+  rpc GetMarketData (MarketDataRequest) returns (MarketDataResponse) {}
+  rpc CancelOrder (CancelOrderRequest) returns (CancelAck) {}
+  rpc OrderAlive  (OrderAliveRequest) returns (OrderAliveResponse) {}
+}
+
+message Order {
+  string  id        = 1;
+  uint64  user_id   = 2;
+  string  side      = 3;
+  double  price     = 4;
+  uint32  quantity  = 5;
+}
+
+message SubmitAck {
+  string order_id    = 1;
+  string timestamp   = 2;
+  string status      = 3;
+  uint32 error_code  = 4;
+}
+
+message WalletRequest {
+  string user_id = 1;
+}
+
+message WalletAck {
+  string user_id = 1;
+  double balance = 2;
+}
+
+message MarketDataRequest {
+  string data_type = 1;
+  string time_from = 2;
+  string time_to   = 3;
+}
+
+message MarketDataResponse {
+  double value = 1;
+}
+
+message CancelOrderRequest {
+  string user_id  = 1;
+  string order_id = 2;
+}
+
+message CancelAck {
+  string order_id       = 1;
+  string user_id        = 2;
+  uint32 order_quantity = 3;
+  uint32 amount_canceled= 4;
+}
+
+message OrderAliveRequest {
+  string order_id = 1;
+}
+
+message OrderAliveResponse {
+  bool alive = 1;
+}
