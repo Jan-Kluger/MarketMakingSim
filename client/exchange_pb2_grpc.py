@@ -35,19 +35,29 @@ class ExchangeStub(object):
             channel: A grpc.Channel.
         """
         self.SubmitOrder = channel.unary_unary(
-                '/exchange.Exchange/SubmitOrder',
+                '/mypackage.Exchange/SubmitOrder',
                 request_serializer=exchange__pb2.Order.SerializeToString,
-                response_deserializer=exchange__pb2.SubmitReply.FromString,
-                _registered_method=True)
-        self.CancelOrder = channel.unary_unary(
-                '/exchange.Exchange/CancelOrder',
-                request_serializer=exchange__pb2.Order.SerializeToString,
-                response_deserializer=exchange__pb2.CancelReply.FromString,
+                response_deserializer=exchange__pb2.SubmitAck.FromString,
                 _registered_method=True)
         self.GetWallet = channel.unary_unary(
-                '/exchange.Exchange/GetWallet',
-                request_serializer=exchange__pb2.Order.SerializeToString,
-                response_deserializer=exchange__pb2.WalletReply.FromString,
+                '/mypackage.Exchange/GetWallet',
+                request_serializer=exchange__pb2.WalletRequest.SerializeToString,
+                response_deserializer=exchange__pb2.WalletAck.FromString,
+                _registered_method=True)
+        self.GetMarketData = channel.unary_unary(
+                '/mypackage.Exchange/GetMarketData',
+                request_serializer=exchange__pb2.MarketDataRequest.SerializeToString,
+                response_deserializer=exchange__pb2.MarketDataResponse.FromString,
+                _registered_method=True)
+        self.CancelOrder = channel.unary_unary(
+                '/mypackage.Exchange/CancelOrder',
+                request_serializer=exchange__pb2.CancelOrderRequest.SerializeToString,
+                response_deserializer=exchange__pb2.CancelAck.FromString,
+                _registered_method=True)
+        self.OrderAlive = channel.unary_unary(
+                '/mypackage.Exchange/OrderAlive',
+                request_serializer=exchange__pb2.OrderAliveRequest.SerializeToString,
+                response_deserializer=exchange__pb2.OrderAliveResponse.FromString,
                 _registered_method=True)
 
 
@@ -60,16 +70,27 @@ class ExchangeServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def CancelOrder(self, request, context):
-        """only id+user_id set
+    def GetWallet(self, request, context):
+        """TODO
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetWallet(self, request, context):
-        """only user_id set
-        """
+    def GetMarketData(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CancelOrder(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def OrderAlive(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -80,23 +101,33 @@ def add_ExchangeServicer_to_server(servicer, server):
             'SubmitOrder': grpc.unary_unary_rpc_method_handler(
                     servicer.SubmitOrder,
                     request_deserializer=exchange__pb2.Order.FromString,
-                    response_serializer=exchange__pb2.SubmitReply.SerializeToString,
-            ),
-            'CancelOrder': grpc.unary_unary_rpc_method_handler(
-                    servicer.CancelOrder,
-                    request_deserializer=exchange__pb2.Order.FromString,
-                    response_serializer=exchange__pb2.CancelReply.SerializeToString,
+                    response_serializer=exchange__pb2.SubmitAck.SerializeToString,
             ),
             'GetWallet': grpc.unary_unary_rpc_method_handler(
                     servicer.GetWallet,
-                    request_deserializer=exchange__pb2.Order.FromString,
-                    response_serializer=exchange__pb2.WalletReply.SerializeToString,
+                    request_deserializer=exchange__pb2.WalletRequest.FromString,
+                    response_serializer=exchange__pb2.WalletAck.SerializeToString,
+            ),
+            'GetMarketData': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMarketData,
+                    request_deserializer=exchange__pb2.MarketDataRequest.FromString,
+                    response_serializer=exchange__pb2.MarketDataResponse.SerializeToString,
+            ),
+            'CancelOrder': grpc.unary_unary_rpc_method_handler(
+                    servicer.CancelOrder,
+                    request_deserializer=exchange__pb2.CancelOrderRequest.FromString,
+                    response_serializer=exchange__pb2.CancelAck.SerializeToString,
+            ),
+            'OrderAlive': grpc.unary_unary_rpc_method_handler(
+                    servicer.OrderAlive,
+                    request_deserializer=exchange__pb2.OrderAliveRequest.FromString,
+                    response_serializer=exchange__pb2.OrderAliveResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'exchange.Exchange', rpc_method_handlers)
+            'mypackage.Exchange', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('exchange.Exchange', rpc_method_handlers)
+    server.add_registered_method_handlers('mypackage.Exchange', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -117,36 +148,9 @@ class Exchange(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/exchange.Exchange/SubmitOrder',
+            '/mypackage.Exchange/SubmitOrder',
             exchange__pb2.Order.SerializeToString,
-            exchange__pb2.SubmitReply.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def CancelOrder(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/exchange.Exchange/CancelOrder',
-            exchange__pb2.Order.SerializeToString,
-            exchange__pb2.CancelReply.FromString,
+            exchange__pb2.SubmitAck.FromString,
             options,
             channel_credentials,
             insecure,
@@ -171,9 +175,90 @@ class Exchange(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/exchange.Exchange/GetWallet',
-            exchange__pb2.Order.SerializeToString,
-            exchange__pb2.WalletReply.FromString,
+            '/mypackage.Exchange/GetWallet',
+            exchange__pb2.WalletRequest.SerializeToString,
+            exchange__pb2.WalletAck.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetMarketData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/mypackage.Exchange/GetMarketData',
+            exchange__pb2.MarketDataRequest.SerializeToString,
+            exchange__pb2.MarketDataResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CancelOrder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/mypackage.Exchange/CancelOrder',
+            exchange__pb2.CancelOrderRequest.SerializeToString,
+            exchange__pb2.CancelAck.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def OrderAlive(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/mypackage.Exchange/OrderAlive',
+            exchange__pb2.OrderAliveRequest.SerializeToString,
+            exchange__pb2.OrderAliveResponse.FromString,
             options,
             channel_credentials,
             insecure,
