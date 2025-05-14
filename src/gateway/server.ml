@@ -70,7 +70,8 @@ let submitOrder buffer =
       recieved_order
    in
 
-  let om_r = to_ack request in
+   let om_r = to_ack request in
+   let _ = Grpc.Buffer. in
      
   
   let reply = Exchange.SubmitOrder.Response.make
