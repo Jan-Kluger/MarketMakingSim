@@ -1,5 +1,10 @@
 (library
  (name order_manager_lib)
  (modules order_manager)
- (libraries types_lib lwt log_book_lib)
+ (libraries
+	types_lib
+	lwt
+	log_book_lib
+	wallet_store_lib
  )
+)
