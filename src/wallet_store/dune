@@ -1,3 +1,7 @@
 (library
  (name wallet_store_lib)
+ (libraries
+	types_lib
+ )
+ (modules wallet_store)
  )
