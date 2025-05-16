@@ -2,11 +2,12 @@ syntax = "proto3";
 package mypackage;
 
 service Exchange {
-  rpc SubmitOrder(Order) returns (SubmitAck) {}
-  rpc GetWallet (WalletRequest) returns (WalletAck) {}
-  rpc GetMarketData (MarketDataRequest) returns (MarketDataResponse) {}
-  rpc CancelOrder (CancelOrderRequest) returns (CancelAck) {}
-  rpc OrderAlive  (OrderAliveRequest) returns (OrderAliveResponse) {}
+  rpc SubmitOrder   (Order)                 returns (SubmitAck) {}
+  rpc GetWallet     (WalletRequest)         returns (WalletAck) {}
+  rpc GetMarketData (MarketDataRequest)     returns (MarketDataResponse) {}
+  rpc CancelOrder   (CancelOrderRequest)    returns (CancelAck) {}
+  rpc OrderAlive    (OrderAliveRequest)     returns (OrderAliveResponse) {}
+  rpc GetNewAccount (RegReq)                returns (RegResponse);
 }
 
 message Order {
@@ -65,4 +66,12 @@ message OrderAliveRequest {
 message OrderAliveResponse {
   bool alive = 1;
   uint32 error_code = 2;
+}
+
+message RegReq {
+  
+}
+
+message RegResponse {
+  string user_id = 1;
 }
