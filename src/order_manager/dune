@@ -6,5 +6,6 @@
 	lwt
 	log_book_lib
 	wallet_store_lib
+	sqlite3
  )
 )

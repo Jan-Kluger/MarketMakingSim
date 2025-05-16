@@ -1,5 +1,6 @@
 open Types_lib.Types
 open Wallet_store_lib
+open Sqlite3
 
 module type ORDER_MANAGER = sig
   val submit_order    : order             -> submitAck
@@ -8,10 +9,16 @@ module type ORDER_MANAGER = sig
   val order_alive     : orderId           -> aliveAck
   val get_market_data : marketDataRequest -> marketDataAck
   val register_user   : userId            -> int option
+  val get_new_id      : unit              -> userId
 end
 
 module ORDER_MANAGER_impl (W : Wallet_store.WALLET_STORE) : ORDER_MANAGER = struct
 
+  let get_db_path () : string =
+    let src_dir = Filename.dirname __FILE__ in
+    Filename.concat src_dir "/../db/data.db"
+  
+  let a_count = Atomic.make 0
 (* LogBook functions *)
   
   let submit_order (order : order) : submitAck =
@@ -40,12 +47,30 @@ module ORDER_MANAGER_impl (W : Wallet_store.WALLET_STORE) : ORDER_MANAGER = stru
   (* Wallet functions *)
 
   let register_user (_uid : userId) =
-    
     failwith "todo"
 
   let get_wallet (user_id : userId) : walletAck =
-    let _u = user_id in
-    let _t = W.get_wallet user_id in
-    failwith "todo"
+    let db = db_open (get_db_path ()) in
+    let t = W.get_wallet db user_id in
+    let _ = db_close db in
+
+    match t with
+    | Some v ->
+      {
+        user_id = user_id;
+        balance = v;
+        error_code = 20;
+      }
+    | None ->
+      {
+        user_id = "";
+        balance = 0.0;
+        error_code = 404;
+      }
+
+  
+
+  let get_new_id () : userId =
+    string_of_int (Atomic.get a_count)
 
 end

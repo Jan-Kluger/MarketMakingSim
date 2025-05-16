@@ -8,7 +8,7 @@ module type ORDER_MANAGER = sig
   val order_alive     : orderId           -> aliveAck
   val get_market_data : marketDataRequest -> marketDataAck
   val register_user   : userId            -> int option
-  
+  val get_new_id      : unit              -> userId
 end
 
 module ORDER_MANAGER_impl (_ : Wallet_store.WALLET_STORE) : ORDER_MANAGER
