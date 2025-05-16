@@ -71,8 +71,6 @@ let submitOrder buffer =
    in
 
    let om_r = to_ack request in
-   let _ = Grpc.Buffer. in
-     
   
   let reply = Exchange.SubmitOrder.Response.make
       ~order_id:om_r.order_id
