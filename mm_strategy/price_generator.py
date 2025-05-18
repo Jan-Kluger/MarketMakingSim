@@ -1,64 +1,71 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-class Generator:
-    def __init__(self, S0=100, sigma=1, T=1, dt=0.01, seed=None, beta=0.5, impact_factor = 0.1):
-        self.S0 = S0
+import numpy as np
+
+class RealTimePriceGenerator:
+    def __init__(self, S0=100.0, sigma=1.0, dt=0.01, beta=0.6, alpha=0.05, seed=None):
+        self.S = S0
         self.sigma = sigma
-        self.T = T
         self.dt = dt
-        self.N = int(T / dt)
-        self.seed = seed
-        self.beta = beta  # price impact exponent
-        self.impact_factor = impact_factor
-        if self.seed is not None:
+        self.beta = beta
+        self.alpha = alpha
+        self.t = 0.0
+        self.impact_queue = []  # queue of pending impacts (if modeling temporary impact)
+        if seed is not None:
             np.random.seed(seed)
+        self.S_history = [S0]
+        self.t_history = [0.0]
 
-    def generate(self):
-        t = np.linspace(0, self.T, self.N + 1)
-        dW = np.random.normal(0, 1, size=self.N) * np.sqrt(self.dt)
-        W = np.concatenate([[0], np.cumsum(dW)])
-        S = self.S0 + self.sigma * W
-        self.S_path = S.copy()  # store for later modification
-        return t, S
+    def step(self):
+        dW = np.random.normal(0, 1) * np.sqrt(self.dt)
+        self.S += self.sigma * dW
+        self.t += self.dt
+        self.S_history.append(self.S)
+        self.t_history.append(self.t)
+        return self.t, self.S
 
-    def apply_price_impact(self, trade_indices, trade_sizes):
-        for idx, Q in zip(trade_indices, trade_sizes):
-            if idx < 0 or idx > self.N:
-                continue  # skip invalid
-            delta_p = self.impact_factor * np.sign(Q) * (abs(Q) ** self.beta)
-            # Apply permanent impact to all future prices
-            self.S_path[idx:] += delta_p
+    def apply_price_impact(self, idx, Q):
+        delta_p = self.alpha * np.sign(Q) * (abs(Q) ** self.beta)
+        self.S_history[idx:] = [s + delta_p for s in self.S_history[idx:]]
 
-    def get_price_path(self):
-        return self.S_path
+    def get_history(self):
+        return self.t_history, self.S_history
+
 
 
 if __name__ == "__main__":
-    gen = Generator(S0=100, sigma=1, T=1, dt=0.01, beta=0.75, seed=42)
-    t, S = gen.generate()
+    steps = 101 
+    gen = RealTimePriceGenerator(S0=100, sigma=1, dt=0.01, beta=0.75, alpha=0.05, seed=42)
 
-    # Simulate 3 trades: buy at t=0.3, sell at t=0.5 and 0.8
+    for _ in range(steps - 1):
+        gen.step()
+
+    t, S = gen.get_history()
+    S_original = S.copy()  # backup before impact
+
+    # Simulate 3 trades at t = 0.3, 0.5, 0.8
     trade_times = [0.3, 0.5, 0.8]
-    trade_sizes = [+1, -1, -1]
+    trade_sizes = [+5, -10, -6]
     trade_indices = [int(ti / gen.dt) for ti in trade_times]
 
-    gen.apply_price_impact(trade_indices, trade_sizes)
-    S_impact = gen.get_price_path()
+    for idx, size in zip(trade_indices, trade_sizes):
+        gen.apply_price_impact(idx, size)
 
-    # Plot original and impacted price paths
+    t, S_impact = gen.get_history()
+
+    # === Plotting ===
     plt.figure(figsize=(10, 5))
-    plt.plot(t, S, label='Original Price', linewidth=1.8)
+    plt.plot(t, S_original, label='Original Price', linewidth=1.8)
     plt.plot(t, S_impact, label='Price After Impact', linestyle='--', linewidth=1.8)
 
-    # Mark trade times
     for idx, size in zip(trade_indices, trade_sizes):
         color = 'green' if size > 0 else 'red'
         label = 'Buy' if size > 0 else 'Sell'
         plt.axvline(t[idx], color=color, linestyle=':', alpha=0.7)
         plt.scatter(t[idx], S_impact[idx], color=color, label=f"{label} at t={t[idx]:.2f}")
 
-    plt.title("Price Path Before and After Trades with Impact")
+    plt.title("Price Path Before and After Trades with Impact (Real-Time Model)")
     plt.xlabel("Time")
     plt.ylabel("Price")
     plt.legend()
