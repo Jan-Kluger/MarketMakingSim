@@ -29,8 +29,8 @@ let print_table (db : db) (table_name : string) : unit =
 let () =
   let db = db_open (get_db_path ()) in
 
-  (* Wallet_store.WALLET_STORE_impl.reset_table db; *)
-  (* print_table db "wallets"; *)
+  Wallet_store.WALLET_STORE_impl.reset_table db;
+  print_table db "wallets";
   
   (* let _ = Wallet_store.WALLET_STORE_impl.register_user db "0" in *)
   (* print_table db "wallets"; *)

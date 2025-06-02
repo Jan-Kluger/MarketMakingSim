@@ -30,8 +30,8 @@ message WalletRequest {
 }
 
 message WalletAck {
-  string user_id = 1;
-  double balance = 2;
+  string user_id    = 1;
+  double balance    = 2;
   uint32 error_code = 3;
 
 }
@@ -43,7 +43,7 @@ message MarketDataRequest {
 }
 
 message MarketDataResponse {
-  double value = 1;
+  double value      = 1;
   uint32 error_code = 2;
 }
 
@@ -53,10 +53,10 @@ message CancelOrderRequest {
 }
 
 message CancelAck {
-  string order_id       = 1;
-  string user_id        = 2;
-  uint32 order_quantity = 3;
-  uint32 amount_canceled= 4;
+  string order_id        = 1;
+  string user_id         = 2;
+  uint32 order_quantity  = 3;
+  uint32 amount_canceled = 4;
 }
 
 message OrderAliveRequest {
@@ -64,8 +64,16 @@ message OrderAliveRequest {
 }
 
 message OrderAliveResponse {
-  bool alive = 1;
-  uint32 error_code = 2;
+  
+  bool   alive        = 1;
+  bool   cancelled    = 2;
+  string side         = 3;
+  uint32 order_amount = 4;
+  uint32 fill_amount  = 5;
+  string timestamp    = 6;
+  uint32 error_code   = 7;
+  
+
 }
 
 message RegReq {
