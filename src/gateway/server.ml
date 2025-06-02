@@ -14,7 +14,7 @@ module Gateway (OM : Order_manager.ORDER_MANAGER) = struct
       tm.Unix.tm_hour
       tm.Unix.tm_min
       tm.Unix.tm_sec
-  
+
 let log rpcc_name =
   let ts = timestamp () in
   Printf.printf "[LOG] %s called at %s\n%!" rpcc_name ts;
@@ -32,51 +32,28 @@ let submitOrder buffer =
         failwith
           (Printf.sprintf "Could not decode request: %s" (Result.show_error e))
   in
-
-  let to_ack (v: Order.t) : submitAck =
-    let side =
-      match v.side with
+  let side =
+      match request.side with
         | "B" -> Buy
         | "S" -> Sell
         | _ -> Invalid
-      in          
-        
-    let recieved_order : submitAck =
-      match side with
-      | Invalid -> begin
-        let ack : submitAck =
-        {
-          order_id = "0";
-          timestamp = "0";
-          status = "REJECTED";
-          error_code = 500;
-        }
-        in
-        ack
-       end
-      | _ -> begin
-        let r = {
-          id = v.id;
-          user_id  = v.user_id;
-          side = side;
-          price = Some v.price ;
-          quantity = v.quantity;
-          timestamp = timestamp ();
-        }
-        in
-        (OM.submit_order r)
-        end
-      in
-      recieved_order
-   in
-
-   let om_r = to_ack request in
+  in     
+  let order = {
+    id = request.id;
+    user_id  = request.user_id;
+    side = side;
+    price = Some request.price ;
+    quantity = request.quantity;
+    timestamp = timestamp ();
+  }
+  in
+  let msg = OM.submit_order order in
   
   let reply = Exchange.SubmitOrder.Response.make
-      ~order_id:om_r.order_id
-      ~timestamp:om_r.timestamp
-      ~status:om_r.status
-      ~error_code:om_r.error_code ()
+      ~order_id:msg.order_id
+      ~timestamp:msg.timestamp
+      ~status:msg.status
+      ~error_code:msg.error_code ()
    in
   Lwt.return (Grpc.Status.(v OK), Some (encode reply |> Writer.contents))
 
@@ -94,9 +71,9 @@ let getWallet buffer =
   in
   let om_r = OM.get_wallet request in
   let reply = Exchange.GetWallet.Response.make
-      ~user_id:om_r.user_id
-      ~balance:om_r.balance
-      ~error_code:om_r.error_code ()
+      ~user_id:    om_r.user_id
+      ~balance:    om_r.balance
+      ~error_code: om_r.error_code ()
   in
   Lwt.return (Grpc.Status.(v OK), Some (encode reply |> Writer.contents))
 
@@ -134,8 +111,8 @@ let getMarketData buffer =
     end
     in
     let reply = Exchange.GetMarketData.Response.make
-        ~value:msg.value
-        ~error_code:msg.error_code () in
+        ~value:      msg.value
+        ~error_code: msg.error_code () in
   Lwt.return (Grpc.Status.(v OK), Some (encode reply |> Writer.contents))
   
 
@@ -159,10 +136,10 @@ let cancelOrder buffer =
     in
     let msg = OM.cancel_order req in
   let reply = Exchange.CancelOrder.Response.make
-      ~order_id:msg.order_id
-      ~user_id:msg.user_id
-      ~order_quantity:msg.order_quantity
-      ~amount_canceled:msg.amount_canceled ()
+      ~order_id:        msg.order_id
+      ~user_id:         msg.user_id
+      ~order_quantity:  msg.order_quantity
+      ~amount_canceled: msg.amount_canceled ()
   in
   Lwt.return (Grpc.Status.(v OK), Some (encode reply |> Writer.contents))
 
@@ -178,20 +155,27 @@ let orderAlive buffer =
         failwith
           (Printf.sprintf "Could not decode request: %s" (Result.show_error e))
   in
-  let msg = OM.order_alive request in
+  let msg = OM.order_info request in
   let reply = Exchange.OrderAlive.Response.make
-      ~alive:msg.alive
-      ~error_code:msg.error_code () in
+      ~alive:        msg.alive
+      ~cancelled:    msg.cancelled
+      ~side:         (Char.escaped (Types_lib.Types.side_to_char msg.side))
+      ~order_amount: msg.order_amount
+      ~fill_amount:  msg.fill_amount
+      ~timestamp:    msg.timestamp
+      ~error_code:   msg.error_code
+      () in
+    
   Lwt.return (Grpc.Status.(v OK), Some (encode reply |> Writer.contents))
 
 let exchange_service =
   Server.Service.(
     v ()
-    |> add_rpc ~name:"SubmitOrder" ~rpc:(Unary (submitOrder))
-    |> add_rpc ~name:"GetWallet" ~rpc:(Unary (getWallet))
+    |> add_rpc ~name:"SubmitOrder"   ~rpc:(Unary (submitOrder))
+    |> add_rpc ~name:"GetWallet"     ~rpc:(Unary (getWallet))
     |> add_rpc ~name:"GetMarketData" ~rpc:(Unary (getMarketData))
-    |> add_rpc ~name:"CancelOrder" ~rpc:(Unary (cancelOrder))
-    |> add_rpc ~name:"OrderAlive" ~rpc:(Unary (orderAlive))
+    |> add_rpc ~name:"CancelOrder"   ~rpc:(Unary (cancelOrder))
+    |> add_rpc ~name:"OrderAlive"    ~rpc:(Unary (orderAlive))
     |> handle_request)
 
 let server =

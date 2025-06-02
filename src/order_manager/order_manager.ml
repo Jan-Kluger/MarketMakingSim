@@ -6,7 +6,7 @@ module type ORDER_MANAGER = sig
   val submit_order    : order             -> submitAck
   val cancel_order    : cancelReq         -> cancelAck
   val get_wallet      : orderId           -> walletAck
-  val order_alive     : orderId           -> aliveAck
+  val order_info     : orderId           -> aliveAck
   val get_market_data : marketDataRequest -> marketDataAck
   val register_user   : userId            -> int option
   val get_new_id      : unit              -> userId
@@ -38,7 +38,7 @@ module ORDER_MANAGER_impl (W : Wallet_store.WALLET_STORE) : ORDER_MANAGER = stru
   let cancel_order (_req: cancelReq) : cancelAck =
     failwith "todo"
 
-  let order_alive (_user_id : orderId) : aliveAck =
+  let order_info (_user_id : orderId) : aliveAck =
     failwith "todo"
 
   let get_market_data (_req : marketDataRequest) : marketDataAck =

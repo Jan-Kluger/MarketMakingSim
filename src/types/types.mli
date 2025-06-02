@@ -50,8 +50,13 @@ type cancelAck = {
 } [@@deriving show]
 
 type aliveAck = {
-  alive : bool;
-  error_code : int;
+  alive        : bool;
+  cancelled    : bool;
+  side         : side;
+  order_amount : int;
+  fill_amount  : int;
+  timestamp    : string;
+  error_code   : int;
 } [@@deriving show]
 
 val side_to_char : side -> char
