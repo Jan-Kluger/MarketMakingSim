@@ -6,7 +6,7 @@ module type ORDER_MANAGER = sig
   val submit_order    : order             -> submitAck
   val cancel_order    : cancelReq         -> cancelAck
   val get_wallet      : orderId           -> walletAck
-  val order_info     : orderId           -> aliveAck
+  val order_info     : orderId            -> aliveAck
   val get_market_data : marketDataRequest -> marketDataAck
   val register_user   : userId            -> int option
   val get_new_id      : unit              -> userId
