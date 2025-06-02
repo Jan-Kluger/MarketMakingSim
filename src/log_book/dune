@@ -1,4 +1,5 @@
 (library
  (name log_book_lib)
  (modules log_book)
+ (libraries sqlite3 types_lib unix)
  )
