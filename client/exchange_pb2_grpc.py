@@ -44,6 +44,11 @@ class ExchangeStub(object):
                 request_serializer=exchange__pb2.WalletRequest.SerializeToString,
                 response_deserializer=exchange__pb2.WalletAck.FromString,
                 _registered_method=True)
+        self.GetBook = channel.unary_unary(
+                '/mypackage.Exchange/GetBook',
+                request_serializer=exchange__pb2.RegReq.SerializeToString,
+                response_deserializer=exchange__pb2.BookResponse.FromString,
+                _registered_method=True)
         self.GetMarketData = channel.unary_unary(
                 '/mypackage.Exchange/GetMarketData',
                 request_serializer=exchange__pb2.MarketDataRequest.SerializeToString,
@@ -76,6 +81,12 @@ class ExchangeServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def GetWallet(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetBook(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -117,6 +128,11 @@ def add_ExchangeServicer_to_server(servicer, server):
                     servicer.GetWallet,
                     request_deserializer=exchange__pb2.WalletRequest.FromString,
                     response_serializer=exchange__pb2.WalletAck.SerializeToString,
+            ),
+            'GetBook': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetBook,
+                    request_deserializer=exchange__pb2.RegReq.FromString,
+                    response_serializer=exchange__pb2.BookResponse.SerializeToString,
             ),
             'GetMarketData': grpc.unary_unary_rpc_method_handler(
                     servicer.GetMarketData,
@@ -193,6 +209,33 @@ class Exchange(object):
             '/mypackage.Exchange/GetWallet',
             exchange__pb2.WalletRequest.SerializeToString,
             exchange__pb2.WalletAck.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetBook(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/mypackage.Exchange/GetBook',
+            exchange__pb2.RegReq.SerializeToString,
+            exchange__pb2.BookResponse.FromString,
             options,
             channel_credentials,
             insecure,
