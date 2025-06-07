@@ -1,6 +1,3 @@
-
-[@@@ocaml.warning "-27"]
-
 open Sqlite3
 open Types_lib.Types
 
@@ -121,9 +118,16 @@ module Log_book : LOG_BOOK = struct
     ignore @@ reset stmt;
     ignore @@ finalize stmt;
     
-    { alive = true; cancelled = false; side = ord.side;
-      order_amount = ord.quantity; fill_amount = 0;
-      timestamp = ord.timestamp; error_code = 0 }
+    {
+      alive = true;
+      cancelled = false;
+      side = ord.side;
+      order_amount = ord.quantity;
+      fill_amount = 0;
+      timestamp = ord.timestamp;
+      error_code = 0;
+      price = ord.price
+    }
 
   (* --------- *)
   
@@ -189,48 +193,51 @@ module Log_book : LOG_BOOK = struct
   (* --------- *)
 
   let get_alive_ack db id =
-    init_tables db;
-    let stmt = prepare db
-        "SELECT side,quantity,timestamp FROM orders WHERE order_id = ?1;" in
-    
-    ignore @@ bind stmt 1 (Data.TEXT id);
-    if step stmt <> Rc.ROW then
-      (
-        ignore @@ finalize stmt;
-        None
-      )
-    else
-      let side_char =
-        match column stmt 0 with Data.TEXT s -> s.[0] | _ -> 'I' in
-      let side = if side_char = 'B' then Buy else Sell in
-      let amount =
-        match column stmt 1 with
-        | Data.INT i -> Int64.to_int i
-        | Data.FLOAT f -> int_of_float f
-        | _ -> 0
-      in
-      let ts =
-        match column stmt 2 with
-        | Data.TEXT s -> s
-        | _ -> ""
-      in
-      ignore @@ reset stmt;
-      ignore @@ finalize stmt;
-      let stmt2 = prepare db "SELECT SUM(filled_qty) FROM fills WHERE order_id = ?1;" in
-      ignore @@ bind stmt2 1 (Data.TEXT id);
-      let filled =
-        match step stmt2 with
-        | Rc.ROW -> (
-            match column stmt2 0 with
-            | Data.INT i -> Int64.to_int i
-            | _ -> 0)
-        | _ -> 0 in
-      ignore @@ reset stmt2;
-      ignore @@ finalize stmt2;
+  init_tables db;
+  let stmt = prepare db
+      "SELECT side, price, quantity, timestamp \
+       FROM orders WHERE order_id = ?1;" in
+  ignore (bind stmt 1 (Data.TEXT id));
+  if step stmt <> Rc.ROW then begin
+    ignore (finalize stmt);
+    None
+  end else begin
+    let side_char = match column stmt 0 with Data.TEXT s -> s.[0] | _ -> 'I' in
+    let side      = if side_char = 'B' then Buy else Sell in
+    let price     = match column stmt 1 with Data.FLOAT f -> Some f | _ -> None in
+    let amount    =
+      match column stmt 2 with
+      | Data.INT i   -> Int64.to_int i
+      | Data.FLOAT f -> int_of_float f
+      | _            -> 0
+    in
+    let ts        = match column stmt 3 with Data.TEXT s -> s | _ -> "" in
+    ignore (reset stmt);
+    ignore (finalize stmt);
 
-      Some { alive = filled < amount; cancelled = false;
-             side; order_amount = amount; fill_amount = filled;
-             timestamp = ts; error_code = 0 }
+    let stmt2 = prepare db
+        "SELECT SUM(filled_qty) FROM fills WHERE order_id = ?1;" in
+    ignore (bind stmt2 1 (Data.TEXT id));
+    let filled = match step stmt2 with
+      | Rc.ROW ->
+        (match column stmt2 0 with Data.INT i -> Int64.to_int i | _ -> 0)
+      | _ -> 0
+    in
+    ignore (reset stmt2);
+    ignore (finalize stmt2);
+
+    Some {
+      alive        = (filled < amount);
+      cancelled    = false;
+      side;
+      order_amount = amount;
+      fill_amount  = filled;
+      timestamp    = ts;
+      error_code   = 0;
+      price        = price;
+    }
+  end
+
 
   (* --------- *)
 
