@@ -4,6 +4,7 @@ package mypackage;
 service Exchange {
   rpc SubmitOrder   (Order)                 returns (SubmitAck) {}
   rpc GetWallet     (WalletRequest)         returns (WalletAck) {}
+  rpc GetBook       (RegReq)                returns (BookResponse)     {}
   rpc GetMarketData (MarketDataRequest)     returns (MarketDataResponse) {}
   rpc CancelOrder   (CancelOrderRequest)    returns (CancelAck) {}
   rpc OrderAlive    (OrderAliveRequest)     returns (OrderAliveResponse) {}
@@ -36,15 +37,33 @@ message WalletAck {
 
 }
 
+message PriceQty {
+  double price    = 1;
+  uint32 quantity = 2;
+}
+
+message BookResponse {
+  repeated PriceQty bids = 1;
+  repeated PriceQty asks = 2;
+}
+
+
 message MarketDataRequest {
   string data_type = 1;
   string time_from = 2;
   string time_to   = 3;
 }
 
+message TradeData {
+  string timestamp     = 1;
+  string aggressor_id  = 2;
+  string passive_id    = 3;
+  double price         = 4;
+  uint32 quantity      = 5;
+}
+
 message MarketDataResponse {
-  double value      = 1;
-  uint32 error_code = 2;
+  repeated TradeData trades    = 1;
 }
 
 message CancelOrderRequest {
