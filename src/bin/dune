@@ -4,6 +4,7 @@
  (libraries
 	types_lib
 	order_manager_lib
+	log_book_lib
 	gateway_lib
 	sqlite3)
  (modules main))

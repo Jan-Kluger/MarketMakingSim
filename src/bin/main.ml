@@ -1,8 +1,12 @@
+[@@@ warning "-33"]
+
 open Order_manager_lib
 open Gateway_lib
 open Wallet_store_lib
+open Log_book_lib
 open Sqlite3
-
+open Types_lib.Types
+    
 module WS = Wallet_store.WALLET_STORE_impl
 module OM = Order_manager.ORDER_MANAGER_impl(WS)
 module G = Server.Gateway(OM)
@@ -29,17 +33,26 @@ let print_table (db : db) (table_name : string) : unit =
 let () =
   let db = db_open (get_db_path ()) in
 
-  Wallet_store.WALLET_STORE_impl.reset_table db;
-  print_table db "wallets";
+  WS.reset_table db;
   
-  (* let _ = Wallet_store.WALLET_STORE_impl.register_user db "0" in *)
-  (* print_table db "wallets"; *)
+  (* 3. Print initial state of relevant tables *)
+  print_table db "wallets";
+  print_table db "orders";
+  print_table db "trades";
 
-  (* let _ = Wallet_store.WALLET_STORE_impl.deposit_funds db "0" 10.0 in *)
-  (* print_table db "wallets"; *)
+  (* 4. Register a user "0" and deposit some funds so we can submit an order *)
+  let _ = WS.register_user db "0" in
+  let _ = WS.deposit_funds db "0" 100.0 in
 
-  (* let _ = Wallet_store.WALLET_STORE_impl.withdraw_funds db "0" 10.0 in *)
-  (* print_table db "wallets"; *)
+  print_endline "*** After registering user \"0\" and depositing 100.0 ***\n";
+  print_table db "wallets";
+
+
+
+  print_table db "wallets";
+  print_table db "orders";
+  print_table db "trades";
+
 
   let _ = db_close db in
 
