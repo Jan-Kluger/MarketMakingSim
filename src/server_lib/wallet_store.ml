@@ -33,7 +33,7 @@ module WALLET_STORE_impl : WALLET_STORE = struct
     let stmt = prepare db
       "SELECT balance FROM wallets WHERE user_id = ?1;"
     in
-    ignore (bind stmt 1 (Data.INT (Int64.of_string uid)));
+    ignore @@ bind stmt 1 (Data.INT (Int64.of_string uid));
     let result =
       match step stmt with
       | Rc.ROW ->
@@ -50,8 +50,8 @@ module WALLET_STORE_impl : WALLET_STORE = struct
     | rc ->
         failwith ("get_balance SQL error: " ^ Rc.to_string rc)
   in
-  ignore (reset stmt);
-  ignore (finalize stmt);
+  ignore @@ reset stmt;
+  ignore @@ finalize stmt;
   result
 
   let deposit_funds (db : db) (uid : userId) (amount : float) : float option =
@@ -63,13 +63,13 @@ module WALLET_STORE_impl : WALLET_STORE = struct
         let stmt = prepare db
           "UPDATE wallets SET balance = ?1 WHERE user_id = ?2;"
         in
-        ignore (bind stmt 1 (Data.FLOAT new_bal));
-        ignore (bind stmt 2 (Data.INT (Int64.of_string uid)));
+        ignore @@ bind stmt 1 (Data.FLOAT new_bal);
+        ignore @@ bind stmt 2 (Data.INT (Int64.of_string uid));
         (match step stmt with
          | Rc.DONE -> ()
          | rc -> failwith ("deposit_funds error: " ^ Rc.to_string rc));
-        ignore (reset stmt);
-        ignore (finalize stmt);
+        ignore @@ reset stmt;
+        ignore @@ finalize stmt;
         Some new_bal
 
   let withdraw_funds (db : db) (uid : userId) (amount : float) : float option =
@@ -81,13 +81,13 @@ module WALLET_STORE_impl : WALLET_STORE = struct
         let stmt = prepare db
           "UPDATE wallets SET balance = ?1 WHERE user_id = ?2;"
         in
-        ignore (bind stmt 1 (Data.FLOAT new_bal));
-        ignore (bind stmt 2 (Data.INT (Int64.of_string uid)));
+        ignore @@ bind stmt 1 (Data.FLOAT new_bal);
+        ignore @@ bind stmt 2 (Data.INT (Int64.of_string uid));
         (match step stmt with
          | Rc.DONE -> ()
          | rc -> failwith ("withdraw_funds error: " ^ Rc.to_string rc));
-        ignore (reset stmt);
-        ignore (finalize stmt);
+        ignore @@ reset stmt;
+        ignore @@ finalize stmt;
         Some new_bal
 
   let register_user (db : db) (uid : userId) : bool =
@@ -95,27 +95,27 @@ module WALLET_STORE_impl : WALLET_STORE = struct
     let stmt_check = prepare db
       "SELECT 1 FROM wallets WHERE user_id = ?1 LIMIT 1;"
     in
-    ignore (bind stmt_check 1 (Data.INT (Int64.of_string uid)));
+    ignore @@ bind stmt_check 1 (Data.INT (Int64.of_string uid));
     let exists =
       match step stmt_check with
       | Rc.ROW -> true
       | Rc.DONE -> false
       | rc -> failwith ("register_user check error: " ^ Rc.to_string rc)
     in
-    ignore (reset stmt_check);
-    ignore (finalize stmt_check);
+    ignore @@ reset stmt_check;
+    ignore @@ finalize stmt_check;
     if exists then false
     else begin
       let stmt_ins = prepare db
         "INSERT INTO wallets (user_id,balance) VALUES (?1,?2);"
       in
-      ignore (bind stmt_ins 1 (Data.INT (Int64.of_string uid)));
-      ignore (bind stmt_ins 2 (Data.FLOAT 0.0));
+      ignore @@ bind stmt_ins 1 (Data.INT (Int64.of_string uid));
+      ignore @@ bind stmt_ins 2 (Data.FLOAT 0.0);
       (match step stmt_ins with
        | Rc.DONE -> ()
        | rc -> failwith ("register_user insert error: " ^ Rc.to_string rc));
-      ignore (reset stmt_ins);
-      ignore (finalize stmt_ins);
+      ignore @@ reset stmt_ins;
+      ignore @@ finalize stmt_ins;
       true
     end
   
