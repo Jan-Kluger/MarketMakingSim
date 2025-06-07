@@ -1,0 +1,15 @@
+(library
+ (name server_lib)
+ 
+ (modules order_book log_book order_manager wallet_store server)
+ 
+ (libraries
+ exchange
+ types_lib
+ sqlite3
+ unix
+ grpc-lwt
+ ocaml-protoc-plugin
+ h2-lwt-unix
+ )
+)
