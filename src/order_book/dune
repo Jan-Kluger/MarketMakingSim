@@ -1,4 +1,4 @@
 (library
  (name order_book_lib)
  (modules order_book)
- (libraries types_lib))
+ (libraries types_lib wallet_store_lib log_book_lib))
