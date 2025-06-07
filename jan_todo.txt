@@ -1,32 +1,5 @@
 Market making Simulation
 
-Priorities:
-- Matching Engine
-- Log book
-- Order Manager
-- API
-- Chart API
-- (Bot skeleton)
-- (Risc managment feature)
-
-What to make:
-- Order book
-- Order matching engine
-- Includes market dynamics
-- Interface to Make bots
-
-Matching Engine:
-Contains order book.
-
-Order book:
-Extensive logging of matched orders.
-
-Order Manager:
-Contains wallet DB to track individual balances
-
-Client gateway API:
-Just to interact with the exchange
-
 Charts:
 Draw global charts from order book
 Draw bot selected charts from order book filtered for bot orders.
@@ -34,15 +7,6 @@ Draw bot selected charts from order book filtered for bot orders.
 Features to be included in the exchange
 
 Feature	 	  	      	    	Explenation
-
-- Potentially Middleware		gRPC
-- Database				Postgres/SQLite (idk)
-- Language				OCaml
-- Semi real time exchange		Exchange should be avalaible for longer periods and continuously
-       	    	 			Update price movements and accept orders.
-
-- API					Should allow for python bots to interact with exchange
-  					Should also have function to draw charts.
 					
 - (Potentailly flutter interface)	Maybe get flutter interface (or any other frontend framework)
   	       	       			to visualize charts and other metrics nicely.
@@ -53,26 +17,8 @@ Potential Additions:
 - Maybe some encryption stuff		Maybe the Exchange offers some kind of security guarantee, so.
   	     				so that an adversary cannot manipulate bot orders to exchange
 
-- Maybe exchange is server hosted	So that bots can be developed async and deployed real time.
+- Add some lwt
 
-Objects and Method signatures:
-
-Objects			Methods			Calls Foregin Module
-
-Order Manager		+ Submit_Order		Order_book, Log DB
-      			+ Cancel_Order		Order_book, Log DB
-			+ Get_Wallet		Wallet DB
-			+ Get_Orderbook		-
-			+ Register_User		Wallet DB
-			+ Deposit_Balance	Wallet DB
-			+ List_Open_Orders	-
-			
-Gateway API		+ Submit Order		Order_Manager
-			+ Cancel_Order		Order_Manager
-			+ get_Chart_data	Order_Book
-
-Order Book		+ Insert		-
-			+ Remove		-
-			+ Best_Match		-
-			+ Get_all_Open_Orders	-
-			- Update_After_Trade	-
+TODO:
+- Alot of edge cases, times where we double log or dont catch an exception
+- Fix base funds to something realistic
