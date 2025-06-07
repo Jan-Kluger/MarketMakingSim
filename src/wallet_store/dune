@@ -1,8 +1,0 @@
-(library
- (name wallet_store_lib)
- (libraries
-	types_lib
-	sqlite3
- )
- (modules wallet_store)
- )
