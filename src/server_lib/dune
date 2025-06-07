@@ -11,5 +11,6 @@
  grpc-lwt
  ocaml-protoc-plugin
  h2-lwt-unix
+ uuidm
  )
 )
