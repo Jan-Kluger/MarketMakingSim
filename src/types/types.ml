@@ -52,6 +52,7 @@ type cancelAck = {
 type aliveAck = {
   alive        : bool;
   cancelled    : bool;
+  price        : float option;
   side         : side;
   order_amount : int;
   fill_amount  : int;
