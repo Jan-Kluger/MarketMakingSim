@@ -1,9 +1,6 @@
 [@@@ warning "-33"]
 
-open Order_manager_lib
-open Gateway_lib
-open Wallet_store_lib
-open Log_book_lib
+open Server_lib
 open Sqlite3
 open Types_lib.Types
     

@@ -3,8 +3,6 @@
  (name main)
  (libraries
 	types_lib
-	order_manager_lib
-	log_book_lib
-	gateway_lib
+	server_lib
 	sqlite3)
  (modules main))
