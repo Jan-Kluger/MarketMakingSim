@@ -76,6 +76,48 @@ let getWallet buffer =
   in
   Lwt.return (Grpc.Status.(v OK), Some (encode reply |> Writer.contents))
 
+let getNewAccount _ =
+  log "getWallet";
+  let open Ocaml_protoc_plugin in
+  let open Exchange.Mypackage in
+  let _, encode = Service.make_service_functions Exchange.getWallet in
+  let om_r = OM.get_new_id () in
+  let reply = Exchange.GetWallet.Response.make
+      ~user_id: om_r ()
+  in
+  Lwt.return (Grpc.Status.(v OK), Some (encode reply |> Writer.contents))
+
+
+let getBook buffer =
+  log "getWallet";
+  let open Ocaml_protoc_plugin in
+  let open Exchange.Mypackage in
+  let decode, encode = Service.make_service_functions Exchange.getBook in
+  let request =
+    Reader.create buffer |> decode |> function
+    | Ok v -> v
+    | Error e ->
+        failwith
+          (Printf.sprintf "Could not decode request: %s" (Result.show_error e))
+  in
+  let bids, asks = OM.get_book request in
+  let bids_pqts = List.fold_left (fun acc (p,q) ->
+      let t = PriceQty.make ~price:p  ~quantity:q () in
+      t :: acc
+    ) [] bids in
+
+  let asks_pqts = List.fold_left (fun acc (p,q) ->
+      let t = PriceQty.make ~price:p  ~quantity:q () in
+      t :: acc
+    ) [] asks in
+
+  let reply = Exchange.GetBook.Response.make
+      ~bids:bids_pqts
+      ~asks:asks_pqts
+      ()
+  in
+  Lwt.return (Grpc.Status.(v OK), Some (encode reply |> Writer.contents))
+
 let getMarketData buffer =
   log "getMarketData";
   let open Ocaml_protoc_plugin in
@@ -95,9 +137,9 @@ let getMarketData buffer =
     | _ -> Invalid
   in
   
-  let msg : marketDataAck =
+  let msg =
     match rt with
-    | Invalid -> {value = 0.0; error_code = 50;}
+    | Invalid -> []
     | _ -> begin
     let t : marketDataRequest =
     {
@@ -107,11 +149,15 @@ let getMarketData buffer =
     }
     in
     OM.get_market_data t
-    end
-    in
+  end in
+
+  let trades = List.fold_left (fun acc (timestamp, aggressor_id, passive_id, price, quantity) ->
+      (TradeData.make ~timestamp ~aggressor_id ~passive_id ~price ~quantity ())  :: acc ) [] msg
+      in
+  
     let reply = Exchange.GetMarketData.Response.make
-        ~value:      msg.value
-        ~error_code: msg.error_code () in
+        ~trades
+         () in
   Lwt.return (Grpc.Status.(v OK), Some (encode reply |> Writer.contents))
   
 
@@ -172,8 +218,10 @@ let exchange_service =
     v ()
     |> add_rpc ~name:"SubmitOrder"   ~rpc:(Unary (submitOrder))
     |> add_rpc ~name:"GetWallet"     ~rpc:(Unary (getWallet))
+    |> add_rpc ~name:"GetBook"       ~rpc:(Unary (getBook))
     |> add_rpc ~name:"GetMarketData" ~rpc:(Unary (getMarketData))
     |> add_rpc ~name:"CancelOrder"   ~rpc:(Unary (cancelOrder))
+    |> add_rpc ~name:"GetNewAccount" ~rpc:(Unary (getNewAccount))
     |> add_rpc ~name:"OrderAlive"    ~rpc:(Unary (orderAlive))
     |> handle_request)
 
@@ -195,7 +243,7 @@ let start iport =
       let+ _server =
         Lwt_io.establish_server_with_client_socket listen_address server
       in
-      print_endline ("Listening @ port " ^ string_of_int port) );
+      print_endline ("\nListening @ port " ^ string_of_int port) );
 
   let forever, _ = Lwt.wait () in
   Lwt_main.run forever
