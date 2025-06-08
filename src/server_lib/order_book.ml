@@ -45,12 +45,13 @@ module type ORDER_BOOK = sig
   val trade_history : t -> (string * orderId * orderId * float * int) list
 end
 
+exception Insufficient_funds of userId
+
 module Make
   (Log : Log_book.LOG_BOOK)
   (W   : Wallet_store.WALLET_STORE)
   : ORDER_BOOK = struct
 
-  exception Insufficient_funds of userId
 
   type t = {
     bids : order list;
