@@ -24,8 +24,8 @@ def run(host: str = 'localhost', port: int = 8080):
     order_req = exchange_pb2.Order(
         id="1",
         user_id=user_id,
-        side="B",
-        price=100000.0,
+        side="S",
+        price=100.0,
         quantity=1
     )
     try:
@@ -44,6 +44,11 @@ def run(host: str = 'localhost', port: int = 8080):
 
     # 5. Retrieve the order book for current bids
     try:
+        balReq = exchange_pb2.WalletRequest(user_id = user_id)
+        balResp = stub.GetWallet(balReq)
+
+        print(balResp)
+
         book_req = exchange_pb2.RegReq()
         book_resp = stub.GetBook(book_req)
         print("\nCurrent bids:")
