@@ -112,13 +112,7 @@ module Order_manager_impl
     let new_id = gen_uuid () in
     let ord = { ord with id = new_id } in
 
-    (match ord.side, ord.price with
-     | Buy, Some p ->
-       let cost = p *. float_of_int ord.quantity in
-       (match W.get_wallet db ord.user_id with
-        | Some bal when bal >= cost -> ()
-        | _ -> raise (Invalid_argument "Insufficient funds"))
-     | _ -> ());
+    try (
 
     let updated_book, _ = OB.place_order !state ord in
     state := updated_book;
@@ -127,13 +121,30 @@ module Order_manager_impl
       timestamp  = ord.timestamp;
       status     = "ACCEPTED";
       error_code = 0 }
+  ) with Order_book.Insufficient_funds _ ->
+      { order_id   = "-1";
+      timestamp  = "";
+      status     = "DECLINED";
+      error_code = 600 }
 
   let cancel_order (req : cancelReq) : cancelAck =
     let new_book, qty_opt = OB.cancel_order !state req.order_id in
     state := new_book;
+    let res =
     match qty_opt with
-    | Some q -> { order_id = req.order_id; user_id = req.user_id; order_quantity = q; amount_canceled = q }
-    | None   -> raise (Invalid_argument "Order not found")
+    | Some q ->
+      { order_id = req.order_id;
+        user_id = req.user_id;
+        order_quantity = q;
+        amount_canceled = q }
+    | None   -> 
+      { order_id = "-1";
+        user_id = "-1";
+        order_quantity = -1;
+        amount_canceled = -1
+      }
+    in
+    res
 
   let get_wallet (uid : userId) : walletAck =
     match W.get_wallet db uid with
