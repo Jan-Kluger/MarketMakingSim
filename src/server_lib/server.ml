@@ -1,6 +1,10 @@
 open Grpc_lwt
 open Types_lib.Types
 
+let gen_uuid () : string =
+  let buf = Bytes.init 16 (fun _ -> Char.chr (Random.int 256)) in
+  Uuidm.v4 buf |> Uuidm.to_string
+
 module Gateway (OM : Order_manager.ORDER_MANAGER) = struct
 
   let timestamp () =
@@ -36,12 +40,12 @@ let submitOrder buffer =
         | "B" -> Buy
         | "S" -> Sell
         | _ -> Invalid
-  in     
+  in
   let order = {
-    id = request.id;
+    id = gen_uuid ();
     user_id  = request.user_id;
     side = side;
-    price = Some request.price ;
+    price = if request.price >= 0.0 then (Some request.price) else None;
     quantity = request.quantity;
     timestamp = timestamp ();
   }
