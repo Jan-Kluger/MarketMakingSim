@@ -20,7 +20,6 @@ def run(host: str = 'localhost', port: int = 8080):
 
     # 3. Submit a sell order
     order_req = exchange_pb2.Order(
-        id="",            # manager will overwrite with UUID
         user_id=user_id,
         side="S",         # 'S' for sell
         price=100.0,      # limit price
