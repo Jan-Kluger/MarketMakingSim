@@ -12,7 +12,6 @@ service Exchange {
 }
 
 message Order {
-  string  id        = 1;
   string  user_id   = 2;
   string  side      = 3;
   double  price     = 4;
