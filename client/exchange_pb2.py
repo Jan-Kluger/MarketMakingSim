@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x65xchange.proto\x12\tmypackage\"S\n\x05Order\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x0c\n\x04side\x18\x03 \x01(\t\x12\r\n\x05price\x18\x04 \x01(\x01\x12\x10\n\x08quantity\x18\x05 \x01(\r\"T\n\tSubmitAck\x12\x10\n\x08order_id\x18\x01 \x01(\t\x12\x11\n\ttimestamp\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\t\x12\x12\n\nerror_code\x18\x04 \x01(\r\" \n\rWalletRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"A\n\tWalletAck\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x0f\n\x07\x62\x61lance\x18\x02 \x01(\x01\x12\x12\n\nerror_code\x18\x03 \x01(\r\"+\n\x08PriceQty\x12\r\n\x05price\x18\x01 \x01(\x01\x12\x10\n\x08quantity\x18\x02 \x01(\r\"T\n\x0c\x42ookResponse\x12!\n\x04\x62ids\x18\x01 \x03(\x0b\x32\x13.mypackage.PriceQty\x12!\n\x04\x61sks\x18\x02 \x03(\x0b\x32\x13.mypackage.PriceQty\"J\n\x11MarketDataRequest\x12\x11\n\tdata_type\x18\x01 \x01(\t\x12\x11\n\ttime_from\x18\x02 \x01(\t\x12\x0f\n\x07time_to\x18\x03 \x01(\t\"i\n\tTradeData\x12\x11\n\ttimestamp\x18\x01 \x01(\t\x12\x14\n\x0c\x61ggressor_id\x18\x02 \x01(\t\x12\x12\n\npassive_id\x18\x03 \x01(\t\x12\r\n\x05price\x18\x04 \x01(\x01\x12\x10\n\x08quantity\x18\x05 \x01(\r\":\n\x12MarketDataResponse\x12$\n\x06trades\x18\x01 \x03(\x0b\x32\x14.mypackage.TradeData\"7\n\x12\x43\x61ncelOrderRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x10\n\x08order_id\x18\x02 \x01(\t\"_\n\tCancelAck\x12\x10\n\x08order_id\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x16\n\x0eorder_quantity\x18\x03 \x01(\r\x12\x17\n\x0f\x61mount_canceled\x18\x04 \x01(\r\"%\n\x11OrderAliveRequest\x12\x10\n\x08order_id\x18\x01 \x01(\t\"\x96\x01\n\x12OrderAliveResponse\x12\r\n\x05\x61live\x18\x01 \x01(\x08\x12\x11\n\tcancelled\x18\x02 \x01(\x08\x12\x0c\n\x04side\x18\x03 \x01(\t\x12\x14\n\x0corder_amount\x18\x04 \x01(\r\x12\x13\n\x0b\x66ill_amount\x18\x05 \x01(\r\x12\x11\n\ttimestamp\x18\x06 \x01(\t\x12\x12\n\nerror_code\x18\x07 \x01(\r\"\x08\n\x06RegReq\"\x1e\n\x0bRegResponse\x12\x0f\n\x07user_id\x18\x01 \x01(\t2\xda\x03\n\x08\x45xchange\x12\x37\n\x0bSubmitOrder\x12\x10.mypackage.Order\x1a\x14.mypackage.SubmitAck\"\x00\x12=\n\tGetWallet\x12\x18.mypackage.WalletRequest\x1a\x14.mypackage.WalletAck\"\x00\x12\x37\n\x07GetBook\x12\x11.mypackage.RegReq\x1a\x17.mypackage.BookResponse\"\x00\x12N\n\rGetMarketData\x12\x1c.mypackage.MarketDataRequest\x1a\x1d.mypackage.MarketDataResponse\"\x00\x12\x44\n\x0b\x43\x61ncelOrder\x12\x1d.mypackage.CancelOrderRequest\x1a\x14.mypackage.CancelAck\"\x00\x12K\n\nOrderAlive\x12\x1c.mypackage.OrderAliveRequest\x1a\x1d.mypackage.OrderAliveResponse\"\x00\x12:\n\rGetNewAccount\x12\x11.mypackage.RegReq\x1a\x16.mypackage.RegResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x65xchange.proto\x12\tmypackage\"G\n\x05Order\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x0c\n\x04side\x18\x03 \x01(\t\x12\r\n\x05price\x18\x04 \x01(\x01\x12\x10\n\x08quantity\x18\x05 \x01(\r\"T\n\tSubmitAck\x12\x10\n\x08order_id\x18\x01 \x01(\t\x12\x11\n\ttimestamp\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\t\x12\x12\n\nerror_code\x18\x04 \x01(\r\" \n\rWalletRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"A\n\tWalletAck\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x0f\n\x07\x62\x61lance\x18\x02 \x01(\x01\x12\x12\n\nerror_code\x18\x03 \x01(\r\"+\n\x08PriceQty\x12\r\n\x05price\x18\x01 \x01(\x01\x12\x10\n\x08quantity\x18\x02 \x01(\r\"T\n\x0c\x42ookResponse\x12!\n\x04\x62ids\x18\x01 \x03(\x0b\x32\x13.mypackage.PriceQty\x12!\n\x04\x61sks\x18\x02 \x03(\x0b\x32\x13.mypackage.PriceQty\"J\n\x11MarketDataRequest\x12\x11\n\tdata_type\x18\x01 \x01(\t\x12\x11\n\ttime_from\x18\x02 \x01(\t\x12\x0f\n\x07time_to\x18\x03 \x01(\t\"i\n\tTradeData\x12\x11\n\ttimestamp\x18\x01 \x01(\t\x12\x14\n\x0c\x61ggressor_id\x18\x02 \x01(\t\x12\x12\n\npassive_id\x18\x03 \x01(\t\x12\r\n\x05price\x18\x04 \x01(\x01\x12\x10\n\x08quantity\x18\x05 \x01(\r\":\n\x12MarketDataResponse\x12$\n\x06trades\x18\x01 \x03(\x0b\x32\x14.mypackage.TradeData\"7\n\x12\x43\x61ncelOrderRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x10\n\x08order_id\x18\x02 \x01(\t\"_\n\tCancelAck\x12\x10\n\x08order_id\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x16\n\x0eorder_quantity\x18\x03 \x01(\r\x12\x17\n\x0f\x61mount_canceled\x18\x04 \x01(\r\"%\n\x11OrderAliveRequest\x12\x10\n\x08order_id\x18\x01 \x01(\t\"\x96\x01\n\x12OrderAliveResponse\x12\r\n\x05\x61live\x18\x01 \x01(\x08\x12\x11\n\tcancelled\x18\x02 \x01(\x08\x12\x0c\n\x04side\x18\x03 \x01(\t\x12\x14\n\x0corder_amount\x18\x04 \x01(\r\x12\x13\n\x0b\x66ill_amount\x18\x05 \x01(\r\x12\x11\n\ttimestamp\x18\x06 \x01(\t\x12\x12\n\nerror_code\x18\x07 \x01(\r\"\x08\n\x06RegReq\"\x1e\n\x0bRegResponse\x12\x0f\n\x07user_id\x18\x01 \x01(\t2\xda\x03\n\x08\x45xchange\x12\x37\n\x0bSubmitOrder\x12\x10.mypackage.Order\x1a\x14.mypackage.SubmitAck\"\x00\x12=\n\tGetWallet\x12\x18.mypackage.WalletRequest\x1a\x14.mypackage.WalletAck\"\x00\x12\x37\n\x07GetBook\x12\x11.mypackage.RegReq\x1a\x17.mypackage.BookResponse\"\x00\x12N\n\rGetMarketData\x12\x1c.mypackage.MarketDataRequest\x1a\x1d.mypackage.MarketDataResponse\"\x00\x12\x44\n\x0b\x43\x61ncelOrder\x12\x1d.mypackage.CancelOrderRequest\x1a\x14.mypackage.CancelAck\"\x00\x12K\n\nOrderAlive\x12\x1c.mypackage.OrderAliveRequest\x1a\x1d.mypackage.OrderAliveResponse\"\x00\x12:\n\rGetNewAccount\x12\x11.mypackage.RegReq\x1a\x16.mypackage.RegResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,35 +32,35 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'exchange_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_ORDER']._serialized_start=29
-  _globals['_ORDER']._serialized_end=112
-  _globals['_SUBMITACK']._serialized_start=114
-  _globals['_SUBMITACK']._serialized_end=198
-  _globals['_WALLETREQUEST']._serialized_start=200
-  _globals['_WALLETREQUEST']._serialized_end=232
-  _globals['_WALLETACK']._serialized_start=234
-  _globals['_WALLETACK']._serialized_end=299
-  _globals['_PRICEQTY']._serialized_start=301
-  _globals['_PRICEQTY']._serialized_end=344
-  _globals['_BOOKRESPONSE']._serialized_start=346
-  _globals['_BOOKRESPONSE']._serialized_end=430
-  _globals['_MARKETDATAREQUEST']._serialized_start=432
-  _globals['_MARKETDATAREQUEST']._serialized_end=506
-  _globals['_TRADEDATA']._serialized_start=508
-  _globals['_TRADEDATA']._serialized_end=613
-  _globals['_MARKETDATARESPONSE']._serialized_start=615
-  _globals['_MARKETDATARESPONSE']._serialized_end=673
-  _globals['_CANCELORDERREQUEST']._serialized_start=675
-  _globals['_CANCELORDERREQUEST']._serialized_end=730
-  _globals['_CANCELACK']._serialized_start=732
-  _globals['_CANCELACK']._serialized_end=827
-  _globals['_ORDERALIVEREQUEST']._serialized_start=829
-  _globals['_ORDERALIVEREQUEST']._serialized_end=866
-  _globals['_ORDERALIVERESPONSE']._serialized_start=869
-  _globals['_ORDERALIVERESPONSE']._serialized_end=1019
-  _globals['_REGREQ']._serialized_start=1021
-  _globals['_REGREQ']._serialized_end=1029
-  _globals['_REGRESPONSE']._serialized_start=1031
-  _globals['_REGRESPONSE']._serialized_end=1061
-  _globals['_EXCHANGE']._serialized_start=1064
-  _globals['_EXCHANGE']._serialized_end=1538
+  _globals['_ORDER']._serialized_end=100
+  _globals['_SUBMITACK']._serialized_start=102
+  _globals['_SUBMITACK']._serialized_end=186
+  _globals['_WALLETREQUEST']._serialized_start=188
+  _globals['_WALLETREQUEST']._serialized_end=220
+  _globals['_WALLETACK']._serialized_start=222
+  _globals['_WALLETACK']._serialized_end=287
+  _globals['_PRICEQTY']._serialized_start=289
+  _globals['_PRICEQTY']._serialized_end=332
+  _globals['_BOOKRESPONSE']._serialized_start=334
+  _globals['_BOOKRESPONSE']._serialized_end=418
+  _globals['_MARKETDATAREQUEST']._serialized_start=420
+  _globals['_MARKETDATAREQUEST']._serialized_end=494
+  _globals['_TRADEDATA']._serialized_start=496
+  _globals['_TRADEDATA']._serialized_end=601
+  _globals['_MARKETDATARESPONSE']._serialized_start=603
+  _globals['_MARKETDATARESPONSE']._serialized_end=661
+  _globals['_CANCELORDERREQUEST']._serialized_start=663
+  _globals['_CANCELORDERREQUEST']._serialized_end=718
+  _globals['_CANCELACK']._serialized_start=720
+  _globals['_CANCELACK']._serialized_end=815
+  _globals['_ORDERALIVEREQUEST']._serialized_start=817
+  _globals['_ORDERALIVEREQUEST']._serialized_end=854
+  _globals['_ORDERALIVERESPONSE']._serialized_start=857
+  _globals['_ORDERALIVERESPONSE']._serialized_end=1007
+  _globals['_REGREQ']._serialized_start=1009
+  _globals['_REGREQ']._serialized_end=1017
+  _globals['_REGRESPONSE']._serialized_start=1019
+  _globals['_REGRESPONSE']._serialized_end=1049
+  _globals['_EXCHANGE']._serialized_start=1052
+  _globals['_EXCHANGE']._serialized_end=1526
 # @@protoc_insertion_point(module_scope)
