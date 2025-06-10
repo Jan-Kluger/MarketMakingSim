@@ -1,44 +1,25 @@
 #!/usr/bin/env python3
 import sys
-import grpc
-import exchange_pb2
-import exchange_pb2_grpc
+from typing import Optional
+from market_api import MarketAPI, Order
 
-def run(host: str = 'localhost', port: int = 8080):
-    channel = grpc.insecure_channel(f'{host}:{port}')
-    stub = exchange_pb2_grpc.ExchangeStub(channel)
+def main(host: str = "localhost", port: int = 8080, *, price: Optional[float] = 100.0):
+    mf = MarketAPI(host, port)
+    print("User ID:", mf.uid)
 
-    # 1. Create a new account
-    reg_resp = stub.GetNewAccount(exchange_pb2.RegReq())
-    user_id = reg_resp.user_id
-    print(f"User ID: {user_id}")
+    # Balance before
+    print("Balance before:", mf.get_balance())
 
-    # 2. Check balance before
-    bal_req = exchange_pb2.WalletRequest(user_id=user_id)
-    bal_before = stub.GetWallet(bal_req)
-    print(f"Balance before buy: {bal_before.balance}")
+    # Submit a BUY limit order
+    buy_order = Order("B", 1, price)
+    order_id, status = mf.place_order(buy_order)
+    print(f"Order submitted → id={order_id}, status={status}")
 
-    # 3. Submit a buy order
-    order_req = exchange_pb2.Order(
-        id="",            # manager will overwrite with UUID
-        user_id=user_id,
-        side="B",         # 'B' for buy
-        price=100.0,      # limit price
-        quantity=1
-    )
-    ack = stub.SubmitOrder(order_req)
-    print("Buy order submitted:")
-    print(f"  order_id:   {ack.order_id}")
-    print(f"  timestamp:  {ack.timestamp}")
-    print(f"  status:     {ack.status}")
-    print(f"  error_code: {ack.error_code}")
+    # Balance after
+    print("Balance after:", mf.get_balance())
 
-    # 4. Check balance after
-    bal_after = stub.GetWallet(bal_req)
-    print(f"Balance after buy: {bal_after.balance}")
 
-if __name__ == '__main__':
-    host = sys.argv[1] if len(sys.argv) > 1 else 'localhost'
+if __name__ == "__main__":
+    host = sys.argv[1] if len(sys.argv) > 1 else "localhost"
     port = int(sys.argv[2]) if len(sys.argv) > 2 else 8080
-    run(host, port)
-
+    main(host, port)
